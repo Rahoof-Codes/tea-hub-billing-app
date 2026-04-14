@@ -1,128 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bakery POS Mobile</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Hub Bakes — POS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+}
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    
-    <nav class="navbar">
-        <div class="logo">🍰Tea Hub Bakes</div>
-        
-        <div class="hamburger" onclick="toggleMenu()">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        
-        <ul id="nav-menu" class="nav-links">
-            <li onclick="menuAction('pos')">Billing Point</li>
-            <li onclick="menuAction('inventory')">Add Items</li>
-            <li onclick="menuAction('analytics')">Shop Status</li>
-        </ul>
-    </nav>
-    
-    <main class="content">
-        
-        <section id="pos" class="section active-section">
-            <div class="pos-layout">
-                <div class="product-area">
-                    <h3>Menu</h3>
-                    <div id="product-grid" class="grid">
-                    </div>
-                </div>
-                
-                <div class="cart-area">
-                    <div class="cart-header">
-                        <h3>Your Bill</h3>
-                        <span id="date-display"></span>
-                    </div>
-                    
-                    <div id="cart-items" class="cart-list">
-                        <p class="empty-msg">Cart is empty...</p>
-                    </div>
-                    
-                    <div class="cart-footer">
-                        <div class="total-row">
-                            <span>Total:</span>
-                            <span id="grand-total">₹0</span>
-                        </div>
-                        <button class="btn-print" onclick="printBill()">🖨️ Print Receipt</button>
-                        <button class="btn-clear" onclick="clearCart()">❌ Clear</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section id="inventory" class="section">
-            <h2>Manage Menu</h2>
-            
-            <div class="form-card">
-                <h3>Add New Item</h3>
-                <label>Item Name</label>
-                <input type="text" id="new-name" placeholder="e.g. Chicken Puff">
-                
-                <label>Price (₹)</label>
-                <input type="number" id="new-price" placeholder="e.g. 25">
-                
-                <label>Image URL (Optional)</label>
-                <input type="text" id="new-img-url" placeholder="https://...">
-                
-                <button class="btn-primary" onclick="addNewProduct()">Add to Menu</button>
-            </div>
-            
-            <div style="margin-top: 30px;">
-                <h3>Current Menu Items</h3>
-                <p style="font-size: 12px; color: #666;">Use the toggle to mark Out of Stock, or the trash icon to delete.</p>
-                <div id="management-list" class="mgmt-list">
-                </div>
-            </div>
-        </section>
-        
-        
-        
-        <section id="analytics" class="section">
-            <h2>Shop Performance</h2>
-            
-            <div class="stats-row">
-                <div class="stat-card revenue">
-                    <h3>Revenue</h3>
-                    <p>₹<span id="total-revenue">0</span></p>
-                </div>
-                <div class="stat-card expense">
-                    <h3>Expenses</h3>
-                    <p>₹<span id="total-expense">0</span></p>
-                </div>
-                <div class="stat-card profit">
-                    <h3>Profit</h3>
-                    <p>₹<span id="net-profit">0</span></p>
-                </div>
-            </div>
-            
-            <div class="expense-form" style="margin-top: 20px;">
-                <h3>Record Expense</h3>
-                <input type="number" id="expense-amt" placeholder="Amount (₹)">
-                <button class="btn-danger" onclick="addExpense()">Add Expense</button>
-            </div>
-            
-            <div style="margin-top: 30px; border-top: 2px dashed #ccc; padding-top: 20px;">
-                <h3>⚙️ Admin Controls</h3>
-                <button class="btn-danger" style="background: #2c3e50;" onclick="resetShopData()">
-                    ⚠️ Reset All Shop Data (Start New Month)
-                </button>
-            </div>
-        </section>
-        
-        
-    </main>
-    
-    <div id="print-area"></div>
-    
-    <script src="script.js"></script>
-</body>
 
+<!-- ── LOGIN ──────────────────────────────────────── -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">☕</div>
+    <div class="login-brand">Tea Hub Bakes</div>
+    <div class="login-sub">POINT OF SALE SYSTEM</div>
+    <input class="login-field" id="l-user" type="text" placeholder="Username" autocomplete="off">
+    <input class="login-field" id="l-pass" type="password" placeholder="Password">
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-err">Invalid credentials. Try again.</div>
+  </div>
+</div>
+
+<!-- ── SIDEBAR BACKDROP ────────────────────────────── -->
+<div class="sidebar-backdrop" id="sb-backdrop" onclick="closeSidebar()"></div>
+
+<!-- ── APP ────────────────────────────────────────── -->
+<div id="app">
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sb-brand">
+        <div class="sb-icon">☕</div>
+        <div class="sb-name">Tea Hub Bakes<small>POS SYSTEM</small></div>
+        <button class="sb-close-btn" onclick="closeSidebar()">✕</button>
+      </div>
+      <div class="sb-section-label">Menu</div>
+      <button class="nav-btn active" id="nav-pos" onclick="showSection('pos',this);closeSidebar()">
+        <span class="nb-icon">🧾</span> Point of Sale
+      </button>
+      <button class="nav-btn" id="nav-dash" onclick="showSection('dash',this);closeSidebar()">
+        <span class="nb-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-btn" id="nav-admin" onclick="showSection('admin',this);closeSidebar()">
+        <span class="nb-icon">⚙️</span> Admin Panel
+      </button>
+      <div class="sb-spacer"></div>
+      <div class="status-pill">
+        <div class="status-dot" id="sb-dot"></div>
+        <span class="status-text" id="sb-status-txt">Loading…</span>
+        <button class="status-toggle" onclick="toggleStatus()">Toggle</button>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">
+        <span>🚪</span> Logout
+      </button>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-area">
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <button class="mob-menu-btn" id="mob-menu-btn" onclick="openSidebar()">☰</button>
+          <div class="top-bar-title" id="page-title">Point of Sale</div>
+        </div>
+        <div class="top-date" id="date-disp"></div>
+      </div>
+
+      <!-- ══ POS SECTION (REDESIGNED) ══ -->
+      <div class="section active" id="sec-pos">
+
+        <!-- LEFT: Menu Panel -->
+        <div class="menu-panel">
+          <!-- Category pills (above search) -->
+          <div class="category-filter" id="cat-filters"></div>
+          <!-- Search bar -->
+          <div class="search-wrap">
+            <input type="text" id="search-box" placeholder="🔍  Search items…" oninput="filterProducts()">
+          </div>
+          <!-- Product grid -->
+          <div class="products-grid" id="product-grid"></div>
+        </div>
+
+        <!-- RIGHT: Sticky Bill Panel -->
+        <div class="bill-panel" id="bill-panel">
+          <div class="bill-header" onclick="handleBillHeaderTap()">
+            <div class="bill-header-left">
+              <h3>🧾 Current Bill</h3>
+              <small id="bill-count">0 items</small>
+            </div>
+            <button class="bill-close-btn" onclick="closeBillPanel(event)">✕</button>
+          </div>
+          <div class="bill-items" id="bill-items"></div>
+          <div class="bill-footer">
+            <div class="bill-line"><span>Subtotal</span><span id="b-sub">₹0</span></div>
+            <div class="bill-line"><span>GST (5%)</span><span id="b-tax">₹0</span></div>
+            <div class="bill-total-line"><span>Total</span><span id="b-total">₹0</span></div>
+            <button class="pay-btn" id="pay-btn" onclick="checkout()" disabled>
+              <span>🖨️ Print & Checkout</span>
+              <span id="pay-total">₹0</span>
+            </button>
+            <button class="clear-btn" onclick="clearCart()">Clear Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- ══ END POS SECTION ══ -->
+
+      <!-- DASHBOARD -->
+      <div class="section" id="sec-dash">
+        <div class="stats-grid">
+          <div class="stat-card s-rev">
+            <div class="stat-label">💰 TOTAL REVENUE</div>
+            <div class="stat-val" id="stat-rev">₹0</div>
+            <div class="stat-sub">All time earnings</div>
+          </div>
+          <div class="stat-card s-exp">
+            <div class="stat-label">📋 TOTAL EXPENSES</div>
+            <div class="stat-val" id="stat-exp">₹0</div>
+            <div class="stat-sub">All time expenses</div>
+          </div>
+          <div class="stat-card s-net">
+            <div class="stat-label">📈 NET PROFIT</div>
+            <div class="stat-val" id="stat-net">₹0</div>
+            <div class="stat-sub">Revenue – Expenses</div>
+          </div>
+          <div class="stat-card s-ord" style="grid-column:span 3 / auto;background:linear-gradient(135deg,#1A3A5C,#1E5C8A);display:flex;align-items:center;gap:40px;flex-wrap:wrap;">
+            <div>
+              <div class="stat-label">📦 TOTAL ORDERS</div>
+              <div class="stat-val" id="stat-ord">0</div>
+            </div>
+            <div>
+              <div class="stat-label">🛒 AVG ORDER VALUE</div>
+              <div class="stat-val" id="stat-avg">₹0</div>
+            </div>
+            <div>
+              <div class="stat-label">📅 TODAY'S DATE</div>
+              <div class="stat-val" style="font-size:1.1rem" id="stat-date">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-row">
+          <div class="dash-card">
+            <h3>💸 Log an Expense</h3>
+            <div class="expense-form">
+              <input class="exp-input" id="exp-desc" type="text" placeholder="Expense description">
+              <input class="exp-input" id="exp-amt" type="number" placeholder="Amount (₹)" min="0">
+              <button class="exp-btn" onclick="addExpense()">Add Expense</button>
+            </div>
+          </div>
+          <div class="dash-card">
+            <h3>🏪 Business Status</h3>
+            <div class="biz-status-card">
+              <div class="big-status">
+                <div class="big-dot" id="big-dot"></div>
+                <div class="big-status-text">
+                  <div class="bst-main" id="big-status-txt">—</div>
+                  <div class="bst-sub">Tap button to toggle</div>
+                </div>
+              </div>
+              <button class="toggle-btn" id="big-toggle-btn" onclick="toggleStatus()">—</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN PANEL -->
+      <div class="section" id="sec-admin">
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:20px;color:var(--text)">⚙️ Item Stock Management</h3>
+        <div class="admin-grid" id="admin-grid"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ MOBILE CART BOTTOM BAR (replaces FAB) ══ -->
+<div class="mob-cart-bar" id="mob-cart-bar" onclick="toggleBillPanel()">
+  <div class="mcb-info">
+    <div class="mcb-label" id="mcb-label">Cart is empty</div>
+    <div class="mcb-total-val" id="mcb-total-val">₹0</div>
+  </div>
+  <div class="mcb-action">
+    <span class="mcb-chevron" id="mcb-chevron">⌃</span>
+    <span>View Bill</span>
+  </div>
+</div>
+
+<!-- Bill panel backdrop (mobile) -->
+<div class="bill-backdrop" id="bill-backdrop" onclick="closeBillPanel()"></div>
+
+<!-- Legacy FAB (hidden, kept for JS safety) -->
+<button class="mob-bill-fab" id="mob-bill-fab" style="display:none!important" aria-hidden="true">
+  🧾 View Bill <span class="fab-badge" id="fab-count">0</span>
+</button>
+
+<!-- PRINT AREA -->
+<div id="print-area"></div>
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
 </html>
