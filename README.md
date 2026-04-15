@@ -13,7 +13,7 @@ This application replaces traditional paper billing with a digital interface. It
 * **Mobile First Design:** Works perfectly on smartphones for billing on-the-go.
 * **Offline Capable:** Uses LocalStorage to save data locally—no internet required for basic operation.
 * **Smart Cart:** Includes Quantity controls (+/-) and a quick Remove (x) option.
-* **Admin Controls:** Monthly data reset and expense tracking.
+* **Admin Controls:** Serverless login system(username:admin;password:admin1234) with Monthly data reset and expense tracking.
 
 ## 🛠️ Tech Stack
 * **Frontend:** HTML5, CSS3 (Flexbox/Grid), JavaScript (ES6).
